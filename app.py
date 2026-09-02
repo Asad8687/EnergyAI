@@ -15,7 +15,11 @@ st.caption("Reference dashboard for the EnergyAI project")
 def load_data():
     ds = fetch_ucirepo(id=374)
     df = pd.concat([ds.data.features.copy(), ds.data.targets.copy()], axis=1)
-    df["date"] = pd.to_datetime(df["date"])
+    df["date"] = pd.to_datetime(
+    df["date"].astype(str).str.replace(
+        r"(\d{4}-\d{2}-\d{2})(\d{2}:)", r"\1 \2", regex=True
+    )
+)
     return df.sort_values("date")
 
 df = load_data()
