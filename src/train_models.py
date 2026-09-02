@@ -14,7 +14,11 @@ OUT.mkdir(exist_ok=True)
 
 dataset = fetch_ucirepo(id=374)
 df = pd.concat([dataset.data.features.copy(), dataset.data.targets.copy()], axis=1)
-df["date"] = pd.to_datetime(df["date"])
+df["date"] = pd.to_datetime(
+    df["date"].astype(str).str.replace(
+        r"(\d{4}-\d{2}-\d{2})(\d{2}:)", r"\1 \2", regex=True
+    )
+)
 df = df.sort_values("date").reset_index(drop=True)
 
 df["hour"] = df.date.dt.hour
